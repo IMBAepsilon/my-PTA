@@ -1,0 +1,50 @@
+```c
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#define MAXSIZE 100
+
+typedef struct t {
+	char val;
+	struct t* left;
+	struct t* right;
+}TreeNode;
+
+void RcreatTree(TreeNode** root, char** str) {
+	if (**str == '0')return;
+	if (**str == '*') {
+		(*str)++;
+		//TreeNode* temp = *root;
+		*root = NULL;
+		//free(temp);
+		return;
+	}
+    (*root)= malloc(sizeof(TreeNode));
+	(*root)->val = **str;
+	(*str)++;
+	//(*root)->left = malloc(sizeof(TreeNode));
+	RcreatTree(&(*root)->left, str);
+	//(*root)->right = malloc(sizeof(TreeNode));
+	RcreatTree(&(*root)->right, str);
+}
+
+void RPTree(TreeNode* root, int i, int* depth) {
+	if (root == 0)return;
+	*depth = fmax(*depth, i + 1);
+	RPTree(root->left, i + 1, depth);
+	RPTree(root->right, i + 1, depth);
+	printf("%c", root->val);
+}
+int main() {
+	char str[MAXSIZE];
+	char** s = malloc(sizeof(char*));
+	*s = str;
+	int depth[1] = { 0 };
+	TreeNode* head;
+	scanf("%s", str);
+	RcreatTree(&head, s);
+	RPTree(head, 0, depth);
+	printf("\n%d\n", *depth);
+	return 0;
+}
+```
