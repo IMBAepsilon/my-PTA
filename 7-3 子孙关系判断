@@ -1,0 +1,61 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+#define MAXSIZE 100
+
+typedef struct t {
+	char val;
+	struct t* left;
+	struct t* right;
+}TreeNode;
+
+void RcreatTree(TreeNode** root, char** str) {
+	if (**str == '0')return;
+	if (**str == '*') {
+		(*str)++;
+		TreeNode* temp = *root;
+		*root = NULL;
+		free(temp);
+		return;
+	}
+	(*root)->val = **str;
+	(*str)++;
+	(*root)->left = malloc(sizeof(TreeNode));
+	RcreatTree(&(*root)->left, str);
+	(*root)->right = malloc(sizeof(TreeNode));
+	RcreatTree(&(*root)->right, str);
+}
+
+void findTree(TreeNode* root, char old, char young, int k, int i, int* depth){
+    if(!root)return;
+    if(root->val == old){
+        if(!k){
+            findTree(root, old, young, 1, 0, depth);
+            return;
+        }
+    }
+    if(root->val == young){
+        *depth = i;
+        return;
+    }
+    if(k)i++;
+    findTree(root->left, old, young, k, i, depth);
+    findTree(root->right, old, young, k, i, depth);
+}
+
+int main(){
+    char str[MAXSIZE];
+	char** s = malloc(sizeof(char*));
+    char old, young;
+	*s = str;
+	int depth[1] = { 0 };
+	TreeNode* head = malloc(sizeof(TreeNode));
+	scanf("%s", str);
+    getchar();
+    scanf("%c%c", &old, &young);
+	RcreatTree(&head, s);
+    findTree(head, old, young, 0, 0, depth);
+    if(*depth)printf("%d",*depth);
+    else printf("NO");
+    return 0;
+}
